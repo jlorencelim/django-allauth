@@ -6,9 +6,10 @@ from django.http import (
     HttpResponsePermanentRedirect,
     HttpResponseRedirect,
 )
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import DetailView
 from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 from django.views.generic.edit import FormView
 
@@ -32,6 +33,7 @@ from .utils import (
     complete_signup,
     get_login_redirect_url,
     get_next_redirect_url,
+    get_user_model,
     logout_on_password_change,
     passthrough_next_redirect_url,
     perform_login,
@@ -819,5 +821,10 @@ class EmailVerificationSentWithUserView(TemplateView):
     template_name = (
         'account/verification_sent.' + app_settings.TEMPLATE_EXTENSION)
 
+    def get_context_data(self, **kwargs):
+        context = super(EmailVerificationSentWithUserView, self).get_context_data(**kwargs)
+        User = get_user_model()
+        context['signed_up_user'] = get_object_or_404(User, pk=self.kwargs.get('pk'))
+        return context
 
 email_verification_sent_user = EmailVerificationSentWithUserView.as_view()
