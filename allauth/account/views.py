@@ -813,3 +813,11 @@ class EmailVerificationSentView(TemplateView):
 
 
 email_verification_sent = EmailVerificationSentView.as_view()
+
+
+class EmailVerificationSentWithUserView(TemplateView):
+    template_name = (
+        'account/verification_sent.' + app_settings.TEMPLATE_EXTENSION)
+
+
+email_verification_sent_user = EmailVerificationSentWithUserView.as_view()

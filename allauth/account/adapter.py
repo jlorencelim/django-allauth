@@ -451,8 +451,12 @@ class DefaultAccountAdapter(object):
             reverse('account_inactive'))
 
     def respond_email_verification_sent(self, request, user):
-        return HttpResponseRedirect(
-            reverse('account_email_verification_sent'))
+        try:
+            if settings.ACCOUNT_EMAIL_VERIFICATION_SENT_WITH_USER:
+                return HttpResponseRedirect(reverse('account_email_verification_sent_user', kwargs={'pk': user.pk}))
+        except Exception:
+            return HttpResponseRedirect(
+                reverse('account_email_verification_sent'))
 
     def _get_login_attempts_cache_key(self, request, **credentials):
         site = get_current_site(request)
